@@ -13,6 +13,7 @@
     },
     "minimum-stability": "stable",
     "require": {
+        "php": ">=5.4.0",
         "behat/behat": "~3.0.12"
     },
     "require-dev": {

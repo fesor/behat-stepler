@@ -8,13 +8,9 @@ use Behat\Testwork\Environment\ServiceContainer\EnvironmentExtension;
 use Behat\Testwork\ServiceContainer\Extension;
 use Behat\Testwork\ServiceContainer\ExtensionManager;
 use Behat\Testwork\Suite\ServiceContainer\SuiteExtension;
-use Fesor\Stepler\Controller\SteplerController;
-use Fesor\Stepler\Generator\DummyFeatureGenerator;
-use Fesor\Stepler\Runner\StepRunner;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
-use Symfony\Component\DependencyInjection\Dump\Container;
 use Symfony\Component\DependencyInjection\Reference;
 
 final class SteplerExtension implements Extension
@@ -42,7 +38,6 @@ final class SteplerExtension implements Extension
             ->children()
                 ->scalarNode('suite')->defaultNull()->end()
             ->end();
-            
     }
 
     /**
@@ -69,7 +64,7 @@ final class SteplerExtension implements Extension
     
     private function loadStepRunner(ContainerBuilder $container)
     {
-        $definition = new Definition(StepRunner::class, [
+        $definition = new Definition('Fesor\\Stepler\\Runner\\StepRunner', [
             new Reference(TesterExtension::STEP_TESTER_ID),
             new Reference(EnvironmentExtension::MANAGER_ID),
             new Reference(self::DUMMY_GENERATOR_ID),
@@ -80,7 +75,7 @@ final class SteplerExtension implements Extension
 
     private function loadSteplerController(ContainerBuilder $container, array $config)
     {
-        $definition = new Definition(SteplerController::class , [
+        $definition = new Definition('Fesor\\Stepler\\Controller\\SteplerController' , [
             new Reference(self::STEP_RUNNER_ID),
             new Reference(SuiteExtension::REGISTRY_ID),
             isset($config['suite']) ? $config['suite'] : null
@@ -91,7 +86,7 @@ final class SteplerExtension implements Extension
     
     private function loadDummyFeatureGenerator(ContainerBuilder $container)
     {
-        $definition = new Definition(DummyFeatureGenerator::class, [
+        $definition = new Definition('Fesor\\Stepler\\Generator\\DummyFeatureGenerator', [
             new Reference('gherkin.parser')
         ]);
         $container->setDefinition(self::DUMMY_GENERATOR_ID, $definition);
