@@ -35,5 +35,8 @@ $ behat --run-step "Alice have user account:
 | password | alice_password       |"
 ```
 
+### Hooks
+Please not that only `BeforeStep` and `AfterStep` hooks are available. If you want to clear your database for example, the workaround for this will be specific step that will purge all test data.
+
 ## Contribution
 Feel free to contribute! Any help or ideas will be useful!
