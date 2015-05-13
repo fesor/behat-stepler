@@ -1,0 +1,21 @@
+{
+    "name": "fesor/behat-stepler",
+    "description": "Simple CLI tool to run specific behat step",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Sergey Protko",
+            "email": "fesors@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {"Fesor\\Stepler\\": "src/"}
+    },
+    "minimum-stability": "stable",
+    "require": {
+        "behat/behat": "~3.0.12"
+    },
+    "require-dev": {
+        "phpspec/phpspec": "~2.2"
+    }
+}
