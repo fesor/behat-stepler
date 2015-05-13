@@ -9,6 +9,7 @@ use Behat\Testwork\ServiceContainer\Extension;
 use Behat\Testwork\ServiceContainer\ExtensionManager;
 use Behat\Testwork\Suite\ServiceContainer\SuiteExtension;
 use Fesor\Stepler\Controller\SteplerController;
+use Fesor\Stepler\Generator\DummyFeatureGenerator;
 use Fesor\Stepler\Runner\StepRunner;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -20,6 +21,7 @@ final class SteplerExtension implements Extension
 {
     
     const STEP_RUNNER_ID = 'stepler.step_runner';
+    const DUMMY_GENERATOR_ID = 'stepler.dummy_generator';
 
     /**
      * @inheritdoc
@@ -28,6 +30,7 @@ final class SteplerExtension implements Extension
     {
         $this->loadStepRunner($container);
         $this->loadSteplerController($container, $config);
+        $this->loadDummyFeatureGenerator($container);
     }
 
     /**
@@ -68,7 +71,8 @@ final class SteplerExtension implements Extension
     {
         $definition = new Definition(StepRunner::class, [
             new Reference(TesterExtension::STEP_TESTER_ID),
-            new Reference(EnvironmentExtension::MANAGER_ID)
+            new Reference(EnvironmentExtension::MANAGER_ID),
+            new Reference(self::DUMMY_GENERATOR_ID),
         ]);
 
         $container->setDefinition(self::STEP_RUNNER_ID, $definition);
@@ -83,6 +87,14 @@ final class SteplerExtension implements Extension
         ]);
         $definition->addTag(CliExtension::CONTROLLER_TAG, array('priority' => 999));
         $container->setDefinition(CliExtension::CONTROLLER_TAG . '.stepler', $definition);
+    }
+    
+    private function loadDummyFeatureGenerator(ContainerBuilder $container)
+    {
+        $definition = new Definition(DummyFeatureGenerator::class, [
+            new Reference('gherkin.parser')
+        ]);
+        $container->setDefinition(self::DUMMY_GENERATOR_ID, $definition);
     }
     
 }

@@ -28,6 +28,11 @@ final class SteplerController implements Controller
      */
     private $suite;
 
+    /**
+     * @param StepRunner $stepRunner
+     * @param SuiteRegistry $registry
+     * @param string|null $suite
+     */
     public function __construct(StepRunner $stepRunner, SuiteRegistry $registry, $suite)
     {
         $this->stepRunner = $stepRunner;

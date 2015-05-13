@@ -3,10 +3,9 @@
 namespace Fesor\Stepler\Runner;
 
 use Behat\Behat\Tester\StepTester;
-use Behat\Gherkin\Node\FeatureNode;
-use Behat\Gherkin\Node\StepNode;
 use Behat\Testwork\Environment\EnvironmentManager;
 use Behat\Testwork\Suite\Suite;
+use Fesor\Stepler\Generator\DummyFeatureGenerator;
 
 final class StepRunner
 {
@@ -21,13 +20,23 @@ final class StepRunner
     private $environmentManager;
 
     /**
+     * @var DummyFeatureGenerator
+     */
+    private $generator;
+
+    /**
      * @param StepTester $stepTester
      * @param EnvironmentManager $environmentManager
+     * @param DummyFeatureGenerator $generator
      */
-    public function __construct(StepTester $stepTester, EnvironmentManager $environmentManager) 
-    {
+    public function __construct(
+        StepTester $stepTester, 
+        EnvironmentManager $environmentManager, 
+        DummyFeatureGenerator $generator
+    ) {
         $this->stepTester = $stepTester;
         $this->environmentManager = $environmentManager;
+        $this->generator = $generator;
     }
 
     /**
@@ -39,28 +48,15 @@ final class StepRunner
     {
         $env = $this->environmentManager->buildEnvironment($suite);
         $env = $this->environmentManager->isolateEnvironment($env);
-        
-        $feature = $this->generateEmptyFeature();
-        $step = $this->generateStep($step);
-        
-        return $this->stepTester->test($env, $feature, $step, false);
-    }
 
-    /**
-     * @return FeatureNode
-     */
-    private function generateEmptyFeature()
-    {
-        return new FeatureNode('', '', [], null, [], 'Feature', 'en', '_.feature', 0);
-    }
+        $dummyFeatureNode = $this->generator->generate($step);
 
-    /**
-     * @param $step
-     * @return StepNode
-     */
-    private function generateStep($step)
-    {
-        return new StepNode('Given', $step, [], 0, 'Given');
+        return $this->stepTester->test(
+            $env, 
+            $dummyFeatureNode->getFeatureNode(), 
+            $dummyFeatureNode->getStepNode(), 
+            false
+        );
     }
     
 }
