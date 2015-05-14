@@ -16,7 +16,7 @@ You can install this extension via composer:
 $ composer require --dev fesor/behat-stepler
 ```
 
-Then you'll need to add extention into your `behat.yml`:
+Then you'll need to add extension into your `behat.yml`:
 ```
 default:
     suites:
