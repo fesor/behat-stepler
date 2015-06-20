@@ -35,6 +35,36 @@ $ behat --run-step "Alice have user account:
 | password | alice_password       |"
 ```
 
+### Step execution results
+Sometime useful to get results of executed step. Given you have step definition, which creates new user. Often you need to get ID of created user (for interaction with API for example). This step definition would looks something like this:
+
+```php
+/**
+ * @Given :name have account
+ */
+public function createUser($name) 
+{
+    $user = $this->fakeUserFactory($name);
+    $this->userRepository->add($user);
+    
+    return $user->getDTO();
+}
+```
+
+Then, if we run this step with `--return-step-results` option:
+
+```
+$ behat --run-step "Bob have account" --return-step-result
+```
+
+We will get something like this:
+
+```
+{"id": 1, "name": "Bob"}
+```
+
+Data will be serialized with `json_encode`, so you should return some kind of DTO, which can be easly serialized into JSON (arrays, simple objects of objects which implements `JsonSerializable` interface).
+
 ### Hooks
 Please not that only `BeforeStep` and `AfterStep` hooks are available. If you want to clear your database for example, the workaround for this will be specific step that will purge all test data.
 

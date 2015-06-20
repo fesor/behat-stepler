@@ -50,6 +50,10 @@ final class SteplerController implements Controller
             ->addOption(
                 '--run-step', null, InputOption::VALUE_REQUIRED,
                 'Run single step'
+            )
+            ->addOption(
+                '--return-step-results', null, InputOption::VALUE_NONE,
+                'Returns results of step execution'
             );
     }
 
@@ -70,7 +74,11 @@ final class SteplerController implements Controller
             return 1;
         }
 
-        $output->writeln('<info>Step passed</info>');
+        if ($input->getOption('return-step-results')) {
+            $output->writeln(json_encode($result->getCallResult()->getReturn()));
+        } else {
+            $output->writeln('<info>Step passed</info>');
+        }
 
         return 0;
     }
