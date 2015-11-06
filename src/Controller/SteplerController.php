@@ -48,11 +48,13 @@ final class SteplerController implements Controller
     {
         $command
             ->addOption(
-                '--run-step', null, InputOption::VALUE_REQUIRED,
-                'Run single step'
+                '--run-steps',
+                null,
+                InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
+                'Run steps'
             )
             ->addOption(
-                '--return-step-results', null, InputOption::VALUE_NONE,
+                '--return-steps-results', null, InputOption::VALUE_NONE,
                 'Returns results of step execution'
             );
     }
@@ -62,41 +64,42 @@ final class SteplerController implements Controller
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        if (null === $step = $input->getOption('run-step')) {
+        $steps = $input->getOption('run-steps');
+        if (empty($steps) || !is_array($steps)) {
             return null;
         }
-        
+
         // try to find correct suite
-        $result = $this->stepRunner->run($step, $this->findSuite());
+        $result = $this->stepRunner->run($steps, $this->findSuite());
         if (!$result->isPassed()) {
-            $output->writeln('<error>Step not passed</error>');
-            
+            $output->writeln('<error>Steps not passed</error>');
+
             return 1;
         }
 
-        if ($input->getOption('return-step-results')) {
+        if ($input->getOption('return-steps-results')) {
             $output->writeln(json_encode($result->getCallResult()->getReturn()));
         } else {
-            $output->writeln('<info>Step passed</info>');
+            $output->writeln('<info>Steps passed</info>');
         }
 
         return 0;
     }
-    
+
     private function findSuite()
     {
         $suites = $this->suiteRepository->getSuites();
-        
+
         if (count($suites) > 0 && null === $this->suite) {
             return $suites[0];
         }
-        
+
         foreach ($suites as $suite) {
             if ($this->suite === $suite->getName()) {
                 return $suite;
             }
         }
-        
+
         throw new \RuntimeException(sprintf('Suite %s not found', $this->suite));
     }
 
