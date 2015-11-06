@@ -19,21 +19,27 @@ class DummyFeatureGenerator
     }
 
 
-    public function generate($rawStep)
+    public function generate($steps)
     {
-        $feature = $this->generateFeatureForStep($rawStep);
+        $feature = $this->generateFeatureForSteps($steps);
         $featureNode = $this->parser->parse($feature);
-        
+
         return new DummyFeatureNode($featureNode);
     }
-    
-    private function generateFeatureForStep($rawStep)
+
+    private function generateFeatureForSteps($steps)
     {
         return implode("\n", [
             'Feature: dummy',
             'Scenario: dummy',
-            sprintf('Given %s', $rawStep)
+            $this->generateRawSteps($steps)
         ]);
     }
-    
+
+    private function generateRawSteps($steps)
+    {
+        return implode("\n", array_map(function($step) {
+            return sprintf('Given %s', $step);
+        }, $steps));
+    }
 }

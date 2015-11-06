@@ -30,8 +30,8 @@ final class StepRunner
      * @param DummyFeatureGenerator $generator
      */
     public function __construct(
-        StepTester $stepTester, 
-        EnvironmentManager $environmentManager, 
+        StepTester $stepTester,
+        EnvironmentManager $environmentManager,
         DummyFeatureGenerator $generator
     ) {
         $this->stepTester = $stepTester;
@@ -40,25 +40,25 @@ final class StepRunner
     }
 
     /**
-     * @param $step
+     * @param array $steps
      * @param Suite $suite
      * @return \Behat\Behat\Tester\Result\StepResult
      */
-    public function run($step, Suite $suite)
+    public function run($steps, Suite $suite)
     {
         $env = $this->environmentManager->buildEnvironment($suite);
         $env = $this->environmentManager->isolateEnvironment($env);
 
-        $dummyFeatureNode = $this->generator->generate($step);
-        
+        $dummyFeatureNode = $this->generator->generate($steps);
+
         $featureNode = $dummyFeatureNode->getFeatureNode();
         $stepNode = $dummyFeatureNode->getStepNode();
 
         $this->stepTester->setUp($env, $featureNode, $stepNode, false);
         $result = $this->stepTester->test($env, $featureNode, $stepNode, false);
         $this->stepTester->tearDown($env, $featureNode, $stepNode, false, $result);
-        
+
         return $result;
     }
-    
+
 }
