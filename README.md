@@ -30,7 +30,7 @@ default:
 That's it. Now you can call just single step:
 
 ```
-$ behat --run-step "Alice have user account:
+$ behat --run-steps "Alice have user account:
 | email    | alice@example.com    |
 | password | alice_password       |"
 ```
@@ -54,7 +54,7 @@ public function createUser($name)
 Then, if we run this step with `--return-step-results` option:
 
 ```
-$ behat --run-step "Bob have account" --return-step-result
+$ behat --run-steps "Bob have account" --return-step-result
 ```
 
 We will get something like this:
