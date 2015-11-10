@@ -50,13 +50,13 @@ final class StepRunner
         $env = $this->environmentManager->isolateEnvironment($env);
 
         $dummyFeatureNode = $this->generator->generate($steps);
-
         $featureNode = $dummyFeatureNode->getFeatureNode();
-        $stepNode = $dummyFeatureNode->getStepNode();
 
-        $this->stepTester->setUp($env, $featureNode, $stepNode, false);
-        $result = $this->stepTester->test($env, $featureNode, $stepNode, false);
-        $this->stepTester->tearDown($env, $featureNode, $stepNode, false, $result);
+        foreach ($dummyFeatureNode->getStepNodes() as $stepNode) {
+            $this->stepTester->setUp($env, $featureNode, $stepNode, false);
+            $result = $this->stepTester->test($env, $featureNode, $stepNode, false);
+            $this->stepTester->tearDown($env, $featureNode, $stepNode, false, $result);
+        }
 
         return $result;
     }
